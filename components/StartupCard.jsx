@@ -8,12 +8,12 @@ import { Button } from './ui/button';
 
 const StartupCard = ({post}) => {
 
-    const {_created, views,author:{_id:authorId,name}, title, category,description, _id,image} = post;
+    const {_createdAt, views,author:{_id:authorId,name}, title, category,description, _id,image} = post;
   return (
     <li className='startup-card group'>
         <div className='flex-between'>
             <p className='startup_card_date'> 
-                {formatDate(_created)}
+                {formatDate(_createdAt)}
             </p>
             <div className='flex gap-1.5'>
                 <EyeIcon className='size-6 text-primary'/>
