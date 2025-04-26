@@ -1,8 +1,9 @@
 import StartupCard from "@/components/StartupCard";
 import SearchForm from "../../components/SearchForm";
-import { STARTUPS_QUERY } from "@/sanity/lib/queries";
+import { STARTUPS_QUERY, STARTUPS_SEARCH_QUERY } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+
 
 /** @typedef {import('@/sanity/types').Startup} Startup */
 /** @typedef {import('@/sanity/types').Author} Author */
@@ -13,11 +14,14 @@ import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 /** @typedef {Omit<Startup, 'author'> & { author?: Author }} StartupWithAuthor */
 
 export default async function Home({ searchParams }) {
-  const { query } = await searchParams
+  const { query } = searchParams || {};
 
-/** @type {StartupWithAuthor[]} */
-const result = await sanityFetch({ query: STARTUPS_QUERY });
-const posts = result.data || []; 
+  /** @type {StartupWithAuthor[]} */
+  const result = query
+    ? await sanityFetch({ query: STARTUPS_SEARCH_QUERY, params: { query: `*${query}*` } })
+    : await sanityFetch({ query: STARTUPS_QUERY });
+
+  const posts = result.data || [];
 
   return (
     <>
