@@ -3,6 +3,7 @@ import SearchForm from "../../components/SearchForm";
 import { STARTUPS_QUERY, STARTUPS_SEARCH_QUERY } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+import { auth } from "@/auth";
 
 
 /** @typedef {import('@/sanity/types').Startup} Startup */
@@ -22,6 +23,10 @@ export default async function Home({ searchParams }) {
     : await sanityFetch({ query: STARTUPS_QUERY });
 
   const posts = result.data || [];
+
+  const session = await auth();
+  console.log(session?.id);
+  
 
   return (
     <>
