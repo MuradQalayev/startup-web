@@ -13,27 +13,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user: { name, email, image }, profile: { id, login, bio } }) {
-      const existingUser = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id });
-
+      const existingUser = await client
+        .withConfig({ useCdn: false })
+        .fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id });
+    
       if (!existingUser) {
         await writeClient.create({
           _type: "author",
-          _id: id,
-          name: name,
+          id,             
+          name,
           username: login,
-          email: email,
-          image: image,
+          email,
+          image,
           bio: bio || "",
         });
       }
-      
+    
       return true;
     },
+    
 
     async jwt({ token, account, profile }) {
       if (account && profile) {
-        const user = await client.fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: profile.id });
-        token.id = user._id;
+        const user = await client.withConfig({useCdn:false}).fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: profile.id });
+        token.id = user?._id;
       }
       return token;
     },
